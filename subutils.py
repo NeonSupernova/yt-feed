@@ -1,12 +1,10 @@
 import timg
 import json
 import requests
+import rich
 from xmltodict import parse
-from rich.console import Console
 from PIL import Image
 from io import BytesIO
-
-console = Console()
 
 class Cache:
     def __init__(self, channel_list):
@@ -32,7 +30,7 @@ class Cache:
         if query != None:
             match sort_method:
                 case 'title':
-                    filtered_list = [video for video in self.cache_list if video.title == query]
+                    filtered_list = [video for video in self.cache_list if query.casefold() in video.title.casefold()]
                 case 'name':
                     filtered_list = [video for video in self.cache_list if video.name == query]
                 case _:
@@ -56,10 +54,10 @@ class Video:
         self.img_height = img_height
 
     def display(self):
-        console.print(self.name, style='cyan')
-        console.print(self.title, style='blue bold')
-        console.print(self.date, style='green italic')
-        console.print(self.link)
+        rich.print(f'[magenta bold]{self.name}[/magenta bold]')
+        rich.print(f'[blue bold]{self.title}[/blue bold]')
+        rich.print(f'[green]{self.date}[/green]')
+        rich.print(f'{self.link}')
         print('')
 
     def img_display(self, method='ascii'):
