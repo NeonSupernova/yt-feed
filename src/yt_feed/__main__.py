@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3.10
 import click
-import subutils
+from yt_feed import feedutils as fu
 
 
 @click.command()
@@ -36,7 +36,7 @@ def main(sort, output_number, img, query):
         "UCS5Oz6CHmeoF7vSad0qqXfw",
         "UCzTlXb7ivVzuFlugVCv3Kvg",
     ]
-    cache = subutils.Cache(yt_chan)
+    cache = fu.Cache(yt_chan)
     cache.get()
     cache.sort(sort, output_number, query)
     for i in cache.cache_list:

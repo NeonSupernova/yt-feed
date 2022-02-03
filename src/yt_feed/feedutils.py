@@ -10,8 +10,8 @@ class Cache:
     def __init__(self, channel_list):
         self.channel_list = channel_list
         self.cache_list = None
-        
-        
+
+
     def get(self):
         vidlist = []
         for i in self.channel_list: # iterates channels
@@ -23,8 +23,8 @@ class Cache:
                 video.thumbnail(j['media:group']['media:thumbnail']['@url'], j['media:group']['media:thumbnail']['@width'], j['media:group']['media:thumbnail'])
                 vidlist.append(video)
         self.cache_list = vidlist
-        
-                                
+
+
     def sort(self, sort_method, list_size, query=None):
         # sort by attribute
         if query != None:
@@ -40,7 +40,7 @@ class Cache:
         filtered_list = sorted(filtered_list, key=lambda video:video.date)
         self.cache_list = filtered_list[-list_size:]
 
-                                
+
 class Video:
     def __init__(self, name, title, date, link):
         self.name = name

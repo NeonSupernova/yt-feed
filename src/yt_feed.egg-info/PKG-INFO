@@ -1,0 +1,27 @@
+Metadata-Version: 2.1
+Name: yt-feed
+Version: 0.0.6
+Summary: Gives subscriptions for things
+Home-page: https://github.com/NeonSupernova/yt-feed
+Author: novapy
+Author-email: puma1505@outlook.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/NeonSupernova/yt-feed/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# Installing
+
+```bash
+python3.10 -m pip install yt-feed
+```
+now add your channels to the config file and get the feed with `yt-feed`
+
+
+
+
