@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3.10
 import click
-from yt_feed import feedutils as fu
+from yt_feed import feedutils as futil
 import os
 import xdg
 import json
@@ -17,10 +17,6 @@ def create_config():
 
     # Reading to load conf at start
     # write to conf only with add()
-
-
-
-
 
 @click.command()
 @click.option(
@@ -57,11 +53,7 @@ def main(sort, output_number, img, query, add):
         with open(f"{xdg.XDG_CONFIG_HOME}/yt-feed/yt-feed.conf", "w") as f:
             json.dump(yt_subs, f)
         return
-    try:
-        cache = fu.Cache(json.load(conf))
-    except ConfigError:
-        print(ConfigError)
-        print("Please add a channel to the list first with --add")
+    cache = futil.Cache(json.load(conf))
     cache.get()
     cache.sort(sort, output_number, query)
     for i in cache.cache_list:
@@ -73,11 +65,12 @@ if __name__ == "__main__":
     main()
 
 
+
+# TODO
 """
-options:
 - [x]help menu;
 - [x]image display: No img, ascii, ansi;
 - [x]amount of things to be displayed;
 - [x]sort options: author, date()
-- []load subscriptions from
+- [x]load subscriptions from config
 """
