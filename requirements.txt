@@ -1,0 +1,6 @@
+click
+timg
+requests
+rich
+xmltodict
+xdg
