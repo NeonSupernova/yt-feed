@@ -1,3 +1,0 @@
-[console_scripts]
-feed = yt_feed:main
-
