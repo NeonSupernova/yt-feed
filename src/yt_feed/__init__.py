@@ -2,21 +2,17 @@
 import click
 from yt_feed import feedutils as futil
 import os
-import xdg
 import json
 
 def create_config():
     # First run creates directory
-    if os.path.exists(f"{xdg.XDG_CONFIG_HOME}/yt-feed") != True:
-        os.mkdir(f"{xdg.XDG_CONFIG_HOME}/yt-feed")
+    if os.path.exists(f"{os.environ["XDG_CONFIG_HOME"]}/yt-feed") != True:
+        os.mkdir(f"{os.environ["XDG_CONFIG_HOME"]}/yt-feed")
     # Create conf if not exists
-    if os.path.exists(f"{xdg.XDG_CONFIG_HOME}/yt-feed/yt-feed.conf") != True:
-        with open(f"{xdg.XDG_CONFIG_HOME}/yt-feed/yt-feed.conf", 'x') as f:
+    if os.path.exists(f"{os.environ["XDG_CONFIG_HOME"]}/yt-feed/yt-feed.conf") != True:
+        with open(f"{os.environ["XDG_CONFIG_HOME"]}/yt-feed/yt-feed.conf", 'x') as f:
             var = []
             json.dump(var, f)
-
-    # Reading to load conf at start
-    # write to conf only with add()
 
 @click.command()
 @click.option(
@@ -46,11 +42,11 @@ def create_config():
 )
 def main(sort, output_number, img, query, add):
     create_config()
-    conf = open(f"{xdg.XDG_CONFIG_HOME}/yt-feed/yt-feed.conf", "r")
+    conf = open(f"{os.environ["XDG_CONFIG_HOME"]}/yt-feed/yt-feed.conf", "r")
     if add:
         yt_subs = json.load(conf)
         yt_subs.append(add)
-        with open(f"{xdg.XDG_CONFIG_HOME}/yt-feed/yt-feed.conf", "w") as f:
+        with open(f"{os.environ["XDG_CONFIG_HOME"]}/yt-feed/yt-feed.conf", "w") as f:
             json.dump(yt_subs, f)
         return
     cache = futil.Cache(json.load(conf))
@@ -73,4 +69,5 @@ if __name__ == "__main__":
 - [x]amount of things to be displayed;
 - [x]sort options: author, date()
 - [x]load subscriptions from config
+- [x]Remove xdg import in favor of using os environment variables
 """

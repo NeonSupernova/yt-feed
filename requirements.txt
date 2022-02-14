@@ -1,6 +1,5 @@
-click
-timg
-requests
-rich
-xmltodict
-xdg
+click==8.0.3
+timg==1.1.6
+requests==2.27.1
+rich==11.2.0
+xmltodict==0.12.0
