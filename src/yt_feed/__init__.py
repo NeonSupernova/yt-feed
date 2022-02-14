@@ -3,14 +3,15 @@ import click
 from yt_feed import feedutils as futil
 import os
 import json
+import appdirs
 
 def create_config():
     # First run creates directory
-    if os.path.exists(f"{os.environ["XDG_CONFIG_HOME"]}/yt-feed") != True:
-        os.mkdir(f"{os.environ["XDG_CONFIG_HOME"]}/yt-feed")
+    if os.path.exists(os.path.join(appdirs.user_config_dir(), "yt-feed")) != True:
+        os.mkdir(os.path.join(appdirs.user_config_dir(), "yt-feed"))
     # Create conf if not exists
-    if os.path.exists(f"{os.environ["XDG_CONFIG_HOME"]}/yt-feed/yt-feed.conf") != True:
-        with open(f"{os.environ["XDG_CONFIG_HOME"]}/yt-feed/yt-feed.conf", 'x') as f:
+    if os.path.exists(os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf")) != True:
+        with open(os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf"), 'x') as f:
             var = []
             json.dump(var, f)
 
@@ -42,11 +43,11 @@ def create_config():
 )
 def main(sort, output_number, img, query, add):
     create_config()
-    conf = open(f"{os.environ["XDG_CONFIG_HOME"]}/yt-feed/yt-feed.conf", "r")
+    conf = open(os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf"), "r")
     if add:
         yt_subs = json.load(conf)
         yt_subs.append(add)
-        with open(f"{os.environ["XDG_CONFIG_HOME"]}/yt-feed/yt-feed.conf", "w") as f:
+        with open(os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf"), "w") as f:
             json.dump(yt_subs, f)
         return
     cache = futil.Cache(json.load(conf))
