@@ -39,3 +39,6 @@ jobs:
     - name: Build Package
       run: |
         python -m build
+    - name: Install Package
+      run: |
+        python -m pip install dist/yt_feed-*.whl
