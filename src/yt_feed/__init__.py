@@ -5,21 +5,37 @@ import os
 import json
 import appdirs
 
+
 def create_config():
     # First run creates directory
-    if os.path.exists(os.path.join(appdirs.user_config_dir(), "yt-feed")) != True:
+    if not os.path.exists(os.path.join(appdirs.user_config_dir(), "yt-feed")):
         os.mkdir(os.path.join(appdirs.user_config_dir(), "yt-feed"))
     # Create conf if not exists
-    if os.path.exists(os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf")) != True:
-        with open(os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf"), 'x') as f:
+    if not (
+        os.path.exists(
+            os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf")
+        )
+    ):
+        with open(
+            os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf"),
+            "x",
+        ) as f:
             var = []
             json.dump(var, f)
 
+
 @click.command()
 @click.option(
-    "--sort", "-s", default='name', help="How to sort the videos.", type=click.Choice(["title", "name"], case_sensitive=False), show_default=True
+    "--sort",
+    "-s",
+    default="name",
+    help="How to sort the videos.",
+    type=click.Choice(["title", "name"], case_sensitive=False),
+    show_default=True,
 )
-@click.option('--query', '-q', help="String to search for as a channel or title")
+@click.option(
+    "--query", "-q", help="String to search for as a channel or title"
+)
 @click.option(
     "--output_number",
     "-o",
@@ -36,18 +52,19 @@ def create_config():
     show_default=True,
     type=click.Choice(["none", "ansi", "ascii"], case_sensitive=False),
 )
-@click.option(
-    "--add",
-    "-a",
-    help="Adds a link to the config"
-)
+@click.option("--add", "-a", help="Adds a link to the config")
 def main(sort, output_number, img, query, add):
     create_config()
-    conf = open(os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf"), "r")
+    conf = open(
+        os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf"), "r"
+    )
     if add:
         yt_subs = json.load(conf)
         yt_subs.append(add)
-        with open(os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf"), "w") as f:
+        with open(
+            os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf"),
+            "w",
+        ) as f:
             json.dump(yt_subs, f)
         return
     cache = futil.Cache(json.load(conf))
@@ -60,7 +77,6 @@ def main(sort, output_number, img, query, add):
 
 if __name__ == "__main__":
     main()
-
 
 
 # TODO
