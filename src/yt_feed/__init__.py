@@ -4,6 +4,7 @@ import utils
 import os
 import json
 import argparse
+from requests import get
 
 def create_config():
 	# Create conf if not exists
@@ -23,21 +24,21 @@ def list_config(conf):
 def parseargs():
 	parser = argparse.ArgumentParser(description='Youtube Subs from Terminal')
 	parser.add_argument(
-		'-s', '--sort', 
+		'-s', '--sort',
 		default='name', choices=['title', 'name'],
 		help='How to sort the videos')
 	parser.add_argument(
-		'-q', '--query', 
+		'-q', '--query',
 		help='query')
 	parser.add_argument(
-		'-o', '--output_number', 
-		default=10, type=int, 
+		'-o', '--output_number',
+		default=10, type=int,
 		help="String to search for as a channel or title")
-	
+
 	parser.add_argument(
-		'-a', '--add', 
+		'-a', '--add',
 		help='Adds a channel id to the config')
-	
+
 	parser.add_argument(
 		'-l', '--list',
 		action="store_true",
@@ -67,7 +68,7 @@ def main():
 		args['query'])
 	for i in feed.feed:
 		i.display()
-	
-	
+
+
 if __name__ == "__main__":
 	main()
