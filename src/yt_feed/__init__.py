@@ -1,28 +1,36 @@
 #!/usr/local/bin/python3.10
 
-import utils
+from .utils import Feed
 import os
 import json
 import argparse
 from xmltodict import parse
 from requests import get
 
-def create_config():
-	# Create conf if not exists
-	if os.path.exists("./yt-feed.conf") != True:
-		with open("./yt-feed.conf", 'x') as f:
-			var = []
-			json.dump(var, f)
+DEFAULT_CONFIG = f"{os.getenv('HOME')}.config/yt-feed.conf"
 
-	# Reading to load conf at start
-	# write to conf only with add()
 def list_config(conf):
-	for i in json.load(conf):
-		x = parse(get('https://www.youtube.com/feeds/videos.xml', params={"channel_id": i}).content)
-		print(x['feed']['entry'][0]['author']['name'])
+	with open(conf, 'r') as f:
+		for i in json.load(f):
+			x = parse(get('https://www.youtube.com/feeds/videos.xml', params={"channel_id": i}).content)
+			print(x['feed']['entry'][0]['author']['name'])
+
+def add_config(conf, sub):
+	with open(conf, 'r') as f:
+		content = json.load(f)
+		content.append(sub)
+		with open(conf, 'w') as f:
+			json.dump(content, f)
 
 
-def parseargs():
+def rm_config(conf, sub):
+	with open(conf, 'r') as f:
+		content = json.load(f)
+		content.pop(sub)
+		with open(conf, 'w') as f:
+			json.dump(content, f)
+
+def parseargs():2
 	parser = argparse.ArgumentParser(description='Youtube Subs from Terminal')
 	parser.add_argument(
 		'-s', '--sort',
@@ -35,34 +43,37 @@ def parseargs():
 		'-o', '--output_number',
 		default=10, type=int,
 		help="String to search for as a channel or title")
-
 	parser.add_argument(
 		'-a', '--add',
 		help='Adds a channel id to the config')
-
+	parser.add_argument(
+		'-rm', '--remove',
+		help='Removes a channel id from the config')
 	parser.add_argument(
 		'-l', '--list',
 		action="store_true",
 		default="False",
 		help='list channels in config')
-
+	parser.add_argument(
+		'-c', '--config',
+		default=DEFAULT_CONFIG,
+		help='Sets config to use'
 	args = parser.parse_args()
 	return args
 
 
 def main():
-	create_config()
 	args = vars(parseargs())
-	conf = open("./yt-feed.conf", "r")
 	if args['list'] == True:
 		list_config(conf)
 		return
 	if args['add'] != None:
-		yt_subs = json.load(conf)
-		yt_subs.append(args['add'])
-		with open("./yt-feed.conf", "w") as f:
-			json.dump(yt_subs, f)
-	feed = utils.Feed(json.load(conf))
+		add_config(conf, args['add'])
+		return
+	if args['remove'] != None:
+		rm_config(conf, args['rm'])
+		return
+	feed = Feed(json.load(conf))
 	feed.sort(
 		args['sort'],
 		args['output_number'],
