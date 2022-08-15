@@ -72,6 +72,7 @@ def parseargs():
 
 def main():
     args = vars(parseargs())
+    conf = args['config']
     if args["list"] == True:
         list_config(conf)
         return
