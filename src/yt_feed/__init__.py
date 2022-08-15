@@ -4,6 +4,7 @@ import utils
 import os
 import json
 import argparse
+from xmltodict import parse
 from requests import get
 
 def create_config():
