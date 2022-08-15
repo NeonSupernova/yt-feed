@@ -1,74 +1,73 @@
 #!/usr/local/bin/python3.10
-import click
-from yt_feed import feedutils as futil
+
+import utils
 import os
 import json
-import appdirs
+import argparse
 
 def create_config():
-    # First run creates directory
-    if os.path.exists(os.path.join(appdirs.user_config_dir(), "yt-feed")) != True:
-        os.mkdir(os.path.join(appdirs.user_config_dir(), "yt-feed"))
-    # Create conf if not exists
-    if os.path.exists(os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf")) != True:
-        with open(os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf"), 'x') as f:
-            var = []
-            json.dump(var, f)
+	# Create conf if not exists
+	if os.path.exists("./yt-feed.conf") != True:
+		with open("./yt-feed.conf", 'x') as f:
+			var = []
+			json.dump(var, f)
 
-@click.command()
-@click.option(
-    "--sort", "-s", default='name', help="How to sort the videos.", type=click.Choice(["title", "name"], case_sensitive=False), show_default=True
-)
-@click.option('--query', '-q', help="String to search for as a channel or title")
-@click.option(
-    "--output_number",
-    "-o",
-    type=int,
-    default=10,
-    help="How many videos are displayed.",
-    show_default=True,
-)
-@click.option(
-    "--img",
-    "-i",
-    default="none",
-    help="How to display thumbnails",
-    show_default=True,
-    type=click.Choice(["none", "ansi", "ascii"], case_sensitive=False),
-)
-@click.option(
-    "--add",
-    "-a",
-    help="Adds a link to the config"
-)
-def main(sort, output_number, img, query, add):
-    create_config()
-    conf = open(os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf"), "r")
-    if add:
-        yt_subs = json.load(conf)
-        yt_subs.append(add)
-        with open(os.path.join(appdirs.user_config_dir(), "yt-feed/yt-feed.conf"), "w") as f:
-            json.dump(yt_subs, f)
-        return
-    cache = futil.Cache(json.load(conf))
-    cache.get()
-    cache.sort(sort, output_number, query)
-    for i in cache.cache_list:
-        i.display()
-        i.img_display(img)
+	# Reading to load conf at start
+	# write to conf only with add()
+def list_config(conf):
+	for i in json.load(conf):
+		x = parse(get('https://www.youtube.com/feeds/videos.xml', params={"channel_id": i}).content)
+		print(x['feed']['entry'][0]['author']['name'])
 
 
+def parseargs():
+	parser = argparse.ArgumentParser(description='Youtube Subs from Terminal')
+	parser.add_argument(
+		'-s', '--sort', 
+		default='name', choices=['title', 'name'],
+		help='How to sort the videos')
+	parser.add_argument(
+		'-q', '--query', 
+		help='query')
+	parser.add_argument(
+		'-o', '--output_number', 
+		default=10, type=int, 
+		help="String to search for as a channel or title")
+	
+	parser.add_argument(
+		'-a', '--add', 
+		help='Adds a channel id to the config')
+	
+	parser.add_argument(
+		'-l', '--list',
+		action="store_true",
+		default="False",
+		help='list channels in config')
+
+	args = parser.parse_args()
+	return args
+
+
+def main():
+	create_config()
+	args = vars(parseargs())
+	conf = open("./yt-feed.conf", "r")
+	if args['list'] == True:
+		list_config(conf)
+		return
+	if args['add'] != None:
+		yt_subs = json.load(conf)
+		yt_subs.append(args['add'])
+		with open("./yt-feed.conf", "w") as f:
+			json.dump(yt_subs, f)
+	feed = utils.Feed(json.load(conf))
+	feed.sort(
+		args['sort'],
+		args['output_number'],
+		args['query'])
+	for i in feed.feed:
+		i.display()
+	
+	
 if __name__ == "__main__":
-    main()
-
-
-
-# TODO
-"""
-- [x]help menu;
-- [x]image display: No img, ascii, ansi;
-- [x]amount of things to be displayed;
-- [x]sort options: author, date()
-- [x]load subscriptions from config
-- [x]Remove xdg import in favor of using os environment variables
-"""
+	main()
